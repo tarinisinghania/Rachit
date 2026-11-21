@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>52 Reasons I Love You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Xanh+Mono:ital@0;1&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#c8202f;
+    --black:#1b1b1b;
+    --card:#fbfaf7;
+    --marker:#151515;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Xanh Mono","Courier New",monospace;
+    color:#111;
+    background:#fff;
+    min-height:100vh;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+  /* ---------- header ---------- */
+  header{text-align:left;max-width:1060px;margin:0 auto;padding:36px 16px 10px}
+  header .hb{font-size:clamp(18px,4.5vw,24px);opacity:.75}
+  header h1{font-family:"EB Garamond",Garamond,Georgia,serif;font-weight:400;font-size:clamp(30px,9vw,64px);line-height:1.05;margin-top:8px;margin-bottom:20px;}
+  header p{font-size:clamp(16px,4vw,20px);opacity:.55;margin-top:10px}
+  .count{font-size:20px;margin-top:14px;opacity:.85}
+
+  /* ---------- shared card styles ---------- */
+  .side{
+    position:absolute;inset:0;border-radius:6% / 4.3%;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    overflow:hidden;
+  }
+  .back{background:var(--card);padding:6%}
+  .pattern{
+    width:100%;height:100%;border-radius:3px;
+    background-color:var(--red);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 1.1px, transparent 1.1px 8px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,.55) 0 1.1px, transparent 1.1px 8px);
+    box-shadow:inset 0 0 0 2px var(--red), inset 0 0 0 4px rgba(255,255,255,.8), inset 0 0 0 6px var(--red);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .face{transform:rotateY(180deg);background:var(--card)}
+  .face.red{color:var(--red)} .face.blk{color:var(--black)}
+  .idx{
+    position:absolute;display:flex;flex-direction:column;align-items:center;
+    font-family:"Libre Baskerville",Georgia,serif;font-weight:700;line-height:1;
+  }
+  .idx span{font-size:.8em;margin-top:2px;font-family:Georgia,serif}
+  .idx.tl{top:4%;left:6%}
+  .idx.br{bottom:4%;right:6%;transform:rotate(180deg)}
+  .pips{position:absolute;inset:14% 18%}
+  .pip{position:absolute;transform:translate(-50%,-50%);line-height:1;font-family:Georgia,serif}
+  .pip.flip{transform:translate(-50%,-50%) rotate(180deg)}
+  .court{
+    position:absolute;inset:13% 15%;border:2px solid currentColor;border-radius:3px;
+    display:flex;align-items:center;justify-content:center;opacity:.35;
+    font-family:"Libre Baskerville",Georgia,serif;
+  }
+
+  /* ---------- grid ---------- */
+  .grid{
+    max-width:1060px;margin:26px auto 100px;padding:0 16px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:14px;
+  }
+  .mini{
+    position:relative;aspect-ratio:2.5/3.5;perspective:700px;
+    transition:transform .2s;
+  }
+  .mini:hover{transform:translateY(-4px)}
+  .mini .inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,1.25,.5,1)}
+  .mini.found .inner{transform:rotateY(180deg)}
+  .mini .side{box-shadow:0 3px 10px rgba(0,0,0,.18);border:1px solid #e4e0da}
+  .mini .idx{font-size:15px}
+  .mini .bigsuit{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;font-family:Georgia,serif}
+
+  /* ---------- big card ---------- */
+  #modal{
+    position:fixed;inset:0;z-index:10;background:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4vh 16px 60px;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    opacity:0;pointer-events:none;transition:opacity .3s;
+  }
+  #modal.open{opacity:1;pointer-events:auto}
+  .stage{width:min(420px,90vw,56vh);aspect-ratio:2.5/3.5;perspective:1600px}
+    .big{position:relative;width:100%;height:100%;transform-style:preserve-3d;
+    transition:transform .8s cubic-bezier(.25,1.2,.45,1);transform:scale(.9)}
+  #modal.open .big{transform:scale(1)}
+  #modal.open .big.flipped{transform:rotateY(180deg)}
+  .big .side{box-shadow:0 14px 40px rgba(0,0,0,.25);border:1px solid #e4e0da}
+  .big .idx{font-size:clamp(20px,6vw,28px)}
+  .big .pip{font-size:clamp(26px,8vw,38px)}
+  .big .pip.ace{font-size:clamp(80px,26vw,120px);opacity:.3}
+  .big .court{font-size:clamp(90px,28vw,130px)}
+  .msg{
+    position:absolute;inset:12% 10%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    color:var(--marker);font-family:"Permanent Marker",cursive;
+    font-size:clamp(26px,8.2vw,40px);line-height:1.08;text-transform:uppercase;
+    transform:rotate(-4deg);word-break:break-word;
+  }
+  .msg.long{font-size:clamp(21px,6.4vw,31px)}
+  .msg.xlong{font-size:clamp(18px,5.4vw,26px)}
+  .msg.media{inset:9% 7%;transform:rotate(-2deg);font-size:clamp(15px,4.4vw,21px)}
+  .has-media .pips,.has-media .court{opacity:.12}
+  .msg.media .photo{transform:rotate(1.5deg)}
+  .sub{
+    margin-top:10px;max-width:92%;
+    font-family:"Courier New",monospace;text-transform:none;
+    font-size:clamp(12px,3.5vw,15px);line-height:1.3;color:#333;letter-spacing:0;
+  }
+  .sound-hint{
+    position:absolute;z-index:2;transform:translateX(-50%);white-space:nowrap;
+    font-family:"Courier New",monospace;text-transform:none;letter-spacing:0;
+    font-size:clamp(11px,3.1vw,13px);line-height:1;color:#fff;
+    background:rgba(0,0,0,.6);border-radius:999px;padding:6px 11px;cursor:pointer;
+    opacity:0;transition:opacity .3s;
+  }
+  .sound-hint.show{opacity:1}
+  .photo{max-width:100%;max-height:76%;width:auto;height:auto;object-fit:contain;margin-bottom:12px;border:5px solid #fff;display:block;background:#eee;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);transform:rotate(3deg)}
+
+  .nav{display:flex;align-items:center;gap:16px;margin-top:24px}
+  .ctrl{font-size:18px;padding:10px 18px;border-radius:999px;border:2px solid rgba(0,0,0,.25);transition:.2s}
+  .ctrl:hover{border-color:#111;background:rgba(0,0,0,.05)}
+  .ctrl:disabled{opacity:.25;pointer-events:none}
+  .pos{font-size:20px;min-width:70px;text-align:center;opacity:.8}
+
+  /* ---------- comments ---------- */
+  .comments{width:min(420px,90vw);margin-top:30px;text-align:left}
+  .comments h3{font-weight:400;font-size:20px;border-bottom:1px solid #ddd;padding-bottom:8px;margin-bottom:6px}
+  .cmt{padding:12px 0;border-bottom:1px solid #eee}
+  .cmt .who{font-size:14px;opacity:.6}
+  .cmt .who b{font-weight:400;opacity:1;color:#111}
+  .cmt .txt{font-size:17px;line-height:1.4;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+  .empty{opacity:.5;font-size:15px;padding:10px 0}
+  #cform{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+  #cform input,#cform textarea{
+    font:inherit;font-size:16px;color:#111;background:#fff;border:1px solid #ccc;border-radius:8px;padding:10px 12px;
+  }
+  #cform textarea{min-height:80px;resize:vertical}
+  #cform input:focus,#cform textarea:focus{outline:none;border-color:#111}
+  #cform .ctrl{align-self:flex-end}
+
+  /* ---------- letter ---------- */
+  #letterBtn{
+    position:fixed;right:18px;bottom:18px;z-index:5;
+    display:flex;align-items:center;gap:8px;
+    background:var(--red);color:#fff;border-radius:999px;padding:12px 18px 12px 14px;
+    font-size:16px;box-shadow:0 8px 22px rgba(200,32,47,.35);
+    animation:nudge 3s ease-in-out infinite;
+  }
+  #letterBtn .env{font-size:22px;line-height:1}
+  #letterBtn:hover{background:#a8192a}
+  @keyframes nudge{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-6deg)}90%{transform:rotate(5deg)}95%{transform:rotate(-3deg)}}
+  #letter{
+    position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .35s;
+  }
+  #letter.open{opacity:1;pointer-events:auto}
+  .paper{
+    position:relative;width:min(520px,94vw);max-height:86vh;overflow-y:auto;
+    background:#fdfbf5;border-radius:4px;padding:44px 34px 36px;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
+    background-image:repeating-linear-gradient(transparent 0 31px, rgba(200,32,47,.10) 31px 32px);
+    background-position:0 92px;
+    transform:translateY(30px) scale(.96);transition:transform .45s cubic-bezier(.25,1.2,.45,1);
+  }
+  #letter.open .paper{transform:none}
+  .paper h2{font-family:"EB Garamond",Georgia,serif;font-weight:400;font-size:clamp(28px,7vw,38px);line-height:1.1;margin-bottom:18px}
+  .paper .body{font-size:17px;line-height:32px;white-space:pre-line;font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;}
+  .paper .sign{font-family:"EB Garamond",Georgia,serif;font-style:italic;font-size:24px;margin-top:20px;text-align:right}
+  .paper .x{position:absolute;top:10px;right:14px;font-size:26px;line-height:1;padding:6px;opacity:.55}
+  .paper .x:hover{opacity:1}
+
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Happy Birthday to My Love</h1>
+</header>
+
+<section class="grid" id="grid"></section>
+
+<div id="modal" role="dialog" aria-modal="true">
+  <div class="stage"><div class="big" id="big"></div></div>
+  <div class="nav">
+    <button class="ctrl" id="prev" aria-label="Previous">←</button>
+    <button class="ctrl" id="close">Close</button>
+    <button class="ctrl" id="next" aria-label="Next">→</button>
+  </div>
+  <section class="comments" id="comments" hidden>
+    <h3>About this memory</h3>
+    <div id="clist"></div>
+    <form id="cform" hidden>
+      <input id="cname" placeholder="your name" maxlength="30" autocomplete="off">
+      <textarea id="ctext" placeholder="write something about this memory…" maxlength="800"></textarea>
+      <button class="ctrl" type="submit" id="cpost">Post</button>
+    </form>
+  </section>
+</div>
+
+<button id="letterBtn" aria-label="Open your letter"><span class="env">💌</span> a letter for you</button>
+
+<div id="letter" role="dialog" aria-modal="true" aria-label="Letter">
+  <div class="paper">
+    <button class="x" id="letterClose" aria-label="Close">×</button>
+    <h2 id="letterTitle"></h2>
+    <div class="body" id="letterBody"></div>
+    <div class="sign" id="letterSign"></div>
+  </div>
+</div>
+
+<script>
+/* =================================================================
+   ✏️  EDIT HERE
+   - text: what's written on the card (written in marker, all caps)
+   - card: optional, e.g. "3♥" or "K♣". Leave it out and one is picked.
+   - memory: optional small red line under the reason
+   - photo: optional picture, e.g.  photo:"media/first-date.jpg"
+   - note: optional, what you want to say about this memory, e.g.
+           note:"this was the night we got lost on the way home"
+           (shows in small typewriter text under the reason)
+   - video: optional video,   e.g.  video:"media/4"
+     (no ending needed: it finds 4.mp4, 4.MP4, 4.m4v or 4.mov by itself)
+     (put the files in a folder called "media" next to this file.
+      Tap a video on the card to turn its sound on/off.)
+   ================================================================= */
+const CONFIG = {
+  yourName: "Me",          // shown on your notes
+
+  // The pop-up letter (button at the bottom right). Write your own!
+  // Press Enter for a new line, keep it between the ` marks.
+  letter: {
+    title: "My Racchu,",
+    body: `Happy birthday.
+
+I made you 52 cards, but honestly I could have kept going forever.
+
+Thank you for every laugh, every late night, every stolen claw clip and every ordinary day you somehow made special.
+
+I know long distance is sucking the life out of us but there is noone i would rather do this with. I am always rooting for you and 
+so proud of everything you acheive every day!
+
+Here's to so many more memories together.`,
+    sign: "Love you always,\nMe"
+  },
+
+  // Paste your Firebase settings here to turn on shared comments
+  // (steps are in Claude's message). Leave as null to turn comments off.
+  firebase: null,
+
+  reasons: [
+    { text:"YOU BRING OUT THE PARTS OF ME I THOUGHT I LOST", video:"media/1" },
+    { text:"YOU'RE THE FUNNIEST GAY PERSON I KNOW", card:"2♥", video:"media/2" },
+    { text:"I TALKED TO GOD ABOUT YOU", video:"media/3", note:"FIRST EVER VALENTINES <3" },
+    { text:"YOU MAKE ME FEEL LIKE I'M WORTH SOMETHING", video:"media/4", note:"YOU NEED DANCE CLASSES" },
+    { text:"YOU'RE THE TYPE OF PERSON PEOPLE WRITE LOVE SONGS ABOUT", photo:"media/5.PNG", note:"just look at you how could someone not" },
+    { text:"MY HEART HAS NEVER FELT AS FULL AS IT DOES WHEN I'M WITH YOU", photo:"media/6.JPG" },
+    { text:"WE FINALLY MET IN THE RIGHT LIFETIME", photo:"media/51.jpeg" },
+    { text:"HOW HANDY YOU ARE HEHE", card:"3♥", photo:"media/8.JPG", note: "guess where we are going" },
+    { text:"WHEN I MET YOU I FOUND OUT HOME ISN'T A PLACE", photo:"media/9.PNG" },
+    { text:"TO KNOW MY BABIES LOVE YOU MUCH!", video:"media/10" },
+    { text:"WHAT WE HAVE, I DON'T WANT WITH ANYONE ELSE", photo:"media/11.JPG" },
+    { text:"YOU ARE THE STARK TO MY PEPPER", photo:"media/12.JPEG" },
+    { text:"I WAKE UP SMILING KNOWING YOU'RE NOT A DREAM", photo:"media/13.PNG" },
+    { text:"SPIDERMAN", card:"Q♦", photo:"media/14.JPG", note:"first ever amherst trip!" },
+    { text:"NONE OF THE ICKS WORK ON YOU LOL", photo:"media/15.JPEG" },
+    { text:"I STARTED WEARING MY SEATBELT AGAIN WHEN I MET YOU", photo:"media/16.JPG", note:"cutest suprise pda hahha"  },
+    { text:"YOU'RE THE ONLY PERSON I'D WANT TO HOLD ME WHEN I CRY", photo:"media/17.JPG" },
+    { text:"YOU MAKE ME FORGET THERE IS BAD IN THE WORLD", photo:"media/18.JPG" },
+    { text:"YOU ARE THE FIRST NOTIFICATION I LOOK FOR", photo:"media/19.JPG" },
+    { text:"I MISS YOU THE SECOND I'M AWAY FROM YOU", card:"8♥", video:"media/20" },
+    { text:"I WOULD KISS YOU EVEN IF YOU ARE SICK", photo:"media/21.JPG" },
+    { text:"I TALK TO MY SISTER ABOUT US. I'M NOT POSITIVE WHAT SHE THINKS, BUT I GET A FEELING SHE'S HAPPY I HAVE SUCH A GREAT GUY", photo:"media/22.PNG" },
+    { text:"DRIVE SAFE", photo:"media/23.PNG" },
+    { text:"I'M PROUD OF YOU", photo:"media/24.JPG" },
+    { text:"I WILL LOOK FOR YOU IN EVERY LIFETIME", photo:"media/25.JPG" },
+    { text:"WDYM YOU RECORDED SONGS FOR ME", card:"4♣", photo:"media/56.jpeg" },
+    { text:"YOU FEEL LIKE HOME", photo:"media/27.PNG", note: "and how can someone look this hot eheh" },
+    { text:"HOW YOU ALWAYS FINISH MY SENTENCES", photo:"media/28.JPG" },
+    { text:"HOW YOU'RE THE ONLY ONE WHO THINKS I'M NOT WEIRD OR THE WIERDEST", video:"media/29" },
+    { text:"HOW YOU'RE THE ONLY ONE WHO GETS MY JOKES... AND LAUGHS", photo:"media/30.jpeg", note: "remember how we sang item songs all the way to maira " },
+    { text:"THE WAY WE PLAY STUPID GAMES, BUT YOU PLAY ANYWAY", photo:"media/31.jpeg" },
+    { text:"YOU'RE HOT", card:"K♥", photo:"media/32.jpeg", note: "veryyyyyyyyyy" },
+    { text:"HOW YOU LOVE ME LIKE NO OTHER", photo:"media/33.jpeg" },
+    { text:"LOOKING FORWARD TO CREATING A LIFETIME OF MEMORIES", photo:"media/34.jpeg", note: "will never forget basil fried rice spice level 8" },
+    { text:"HOW YOU TELL ME LONG STORIES THAT HAVE NO MEANING, BUT YOU KNOW I'LL LISTEN ANYWAY", photo:"media/35.jpeg" },
+    { text:"HOW YOU LISTEN TO ME TALK FOR HOURS", photo:"media/36.jpeg" },
+    { text:"HOW YOU FORGIVE ME WHEN I DO WRONG", photo:"media/37.jpeg" },
+    { text:"THE WAY WE CAN JOKE WITH EACH OTHER", card:"7♦", photo:"media/38.jpeg", note: "the first time you stole my claw clip" },
+    { text:"THE WAY YOU LOOK AFTER I SAY I LOVE YOU", photo:"media/39.jpeg" },
+    { text:"HOW SOMETIMES IT FEELS LIKE WE'RE THE ONLY ONES HERE", photo:"media/40.jpeg", note: "remember the date?" },
+    { text:"THE WAY YOU'RE NOT EMBARRASSED TO CALL ME SWEET THINGS IN FRONT OF ANYONE", photo:"media/41.jpeg" },
+    { text:"THE WAY YOU CALL ME EVERY FREAKIN MINUTE", photo:"media/42.jpeg" },
+    { text:"HOW YOU ALWAYS FIND A WAY TO SEE ME OR TALK TO ME", photo:"media/43.jpeg" },
+    { text:"YOU MAKE ME FEEL GOOD PHYSICALLY + EMOTIONALLY", card:"K♣", photo:"media/44.jpeg" },
+    { text:"HOW YOU PUT ME BEFORE YOUR FRIENDS", photo:"media/45.jpeg" },
+    { text:"HOW YOU WOULD DO ANYTHING FOR ME", photo:"media/46.jpeg" },
+    { text:"HOW YOU'RE NOT AFRAID TO TELL ME YOUR FEELINGS", photo:"media/47.jpeg" },
+    { text:"HOW YOU CAN CRY IN FRONT OF ME WITHOUT BEING SHY OR EMBARRASSED", photo:"media/48.jpeg", note: "not a lot but still" },
+    { text:"HOW YOU'D SKIP A PARTY JUST TO STAY HOME WITH ME ALL NIGHT", photo:"media/49.jpeg" },
+    { text:"THE WAY WE'RE SO MUCH ALIKE", photo:"media/50.jpeg" },
+    { text:"IDC WHOSOEVER I GO HERE WITH YOURE STILL MY FAVOURITE", photo:"media/54.jpeg" },
+    { text:"SIMPLY BECAUSE YOU ARE YOU.", card:"6♥", photo:"media/57.jpeg" }
+  ]
+};
+/* ================================================================= */
+
+const $ = id => document.getElementById(id);
+const SUITS = ["♠","♥","♦","♣"];
+const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+const R = CONFIG.reasons, N = R.length;
+
+/* give every reason a unique playing card */
+(function(){
+  const used = new Set(R.filter(r => r.card).map(r => r.card));
+  const pool = [];
+  for (const s of SUITS) for (const r of RANKS) { const c = r + s; if (!used.has(c)) pool.push(c); }
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  R.forEach(r => { if (!r.card) r.card = pool.shift() || "A♠"; });
+})();
+
+const PIPS = {
+  2:[[50,0],[50,100]], 3:[[50,0],[50,50],[50,100]],
+  4:[[0,0],[100,0],[0,100],[100,100]], 5:[[0,0],[100,0],[50,50],[0,100],[100,100]],
+  6:[[0,0],[100,0],[0,50],[100,50],[0,100],[100,100]],
+  7:[[0,0],[100,0],[50,25],[0,50],[100,50],[0,100],[100,100]],
+  8:[[0,0],[100,0],[50,25],[0,50],[100,50],[50,75],[0,100],[100,100]],
+  9:[[0,0],[100,0],[0,33],[100,33],[50,50],[0,67],[100,67],[0,100],[100,100]],
+  10:[[0,0],[100,0],[50,17],[0,33],[100,33],[0,67],[100,67],[50,83],[0,100],[100,100]]
+};
+const parse = c => { const suit = c.slice(-1), rank = c.slice(0,-1);
+  return { suit, rank, color: (suit === "♥" || suit === "♦") ? "red" : "blk" }; };
+
+const BACK = `<div class="side back"><div class="pattern"></div></div>`;
+
+/* ---------- grid ---------- */
+// cards start face-down every time the page loads
+const found = new Set();
+const save = () => {};
+try { localStorage.removeItem("fifty-two-found"); } catch(e) {}
+
+const minis = R.map((r, i) => {
+  const { suit, rank, color } = parse(r.card);
+  const el = document.createElement("button");
+  el.className = "mini";
+  el.setAttribute("aria-label", "Card " + (i + 1));
+  el.innerHTML = `<div class="inner">${BACK}
+    <div class="side face ${color}">
+      <div class="idx tl">${rank}<span>${suit}</span></div>
+      <div class="bigsuit">${suit}</div>
+      <div class="idx br">${rank}<span>${suit}</span></div>
+    </div></div>`;
+  el.addEventListener("click", () => open(i));
+  $("grid").appendChild(el);
+  return el;
+});
+
+function refresh(){
+  found.forEach(i => minis[i] && minis[i].classList.add("found"));
+}
+
+/* ---------- big card ---------- */
+let cur = null, busy = false;
+
+function fillBig(i){
+  const r = R[i];
+  const { suit, rank, color } = parse(r.card);
+  let middle;
+  if (rank === "A") middle = `<div class="pips"><div class="pip ace" style="left:50%;top:50%">${suit}</div></div>`;
+  else if (["J","Q","K"].includes(rank)) middle = `<div class="court">${rank}</div>`;
+  else middle = `<div class="pips">${PIPS[rank].map(([x,y]) =>
+      `<div class="pip${y > 50 ? " flip" : ""}" style="left:${x}%;top:${y}%">${suit}</div>`).join("")}</div>`;
+  const hasMedia = !!(r.photo || r.video);
+  const size = (hasMedia || r.text.length > 34) ? " xlong" : r.text.length > 20 ? " long" : "";
+  $("big").innerHTML = BACK + `<div class="side face ${color}">
+      <div class="idx tl">${rank}<span>${suit}</span></div>${middle}
+      <div class="msg${size}"></div>
+      <div class="idx br">${rank}<span>${suit}</span></div></div>`;
+  const msg = $("big").querySelector(".msg");
+  if (hasMedia) msg.classList.add("media");
+  if (hasMedia) $("big").querySelector(".face").classList.add("has-media");
+  if (r.video) {
+    const v = document.createElement("video");
+    // tries each name until one plays: 1.mp4, 1.MP4, 1.m4v, 1.mov, 1.MOV ...
+    const base = r.video.replace(/\.(mp4|m4v|mov)$/i, "");
+    [["mp4","video/mp4"],["MP4","video/mp4"],["m4v","video/mp4"],["M4V","video/mp4"],
+     ["mov","video/quicktime"],["MOV","video/quicktime"],["mov","video/mp4"],["MOV","video/mp4"]]
+      .forEach(([ext, type]) => { const src = document.createElement("source"); src.src = base + "." + ext; src.type = type; v.appendChild(src); });
+    v.className = "photo"; v.muted = true; v.loop = true; v.preload = "auto";
+    v.autoplay = true; v.playsInline = true; v.setAttribute("playsinline", "");
+    const hint = document.createElement("button");
+    hint.type = "button"; hint.className = "sound-hint";
+    const label = () => { hint.textContent = v.muted ? "🔈 tap for sound" : "🔊 tap to mute"; };
+    const toggle = e => { e.stopPropagation(); v.muted = !v.muted; v.play().catch(() => {}); label(); };
+    v.addEventListener("click", toggle);
+    hint.addEventListener("click", toggle);
+    label();
+    msg.appendChild(v);
+    msg.appendChild(hint);
+    // sit the label on the top edge of the video once its size is known
+    const place = () => {
+      if (!v.offsetWidth) return;
+      hint.style.left = (v.offsetLeft + v.offsetWidth / 2) + "px";
+      hint.style.top = (v.offsetTop + 12) + "px";
+      hint.classList.add("show");
+    };
+    v.addEventListener("loadedmetadata", place);
+    v.addEventListener("resize", place);
+    window.addEventListener("resize", place);
+    setTimeout(place, 600);
+  } else if (r.photo) { const img = new Image(); img.src = r.photo; img.className = "photo"; img.alt = ""; msg.appendChild(img); }
+  msg.appendChild(document.createTextNode(r.text));
+  const sub = r.note || r.memory;
+  if (sub) { const m = document.createElement("div"); m.className = "sub"; m.textContent = sub; msg.appendChild(m); }
+  renderComments();
+  $("prev").disabled = i === 0;
+  $("next").disabled = i === N - 1;
+}
+
+function flipUp(i){
+  setTimeout(() => {
+    $("big").classList.add("flipped");
+    found.add(i); save();
+    setTimeout(refresh, 350);
+  }, 350);
+}
+
+function open(i){
+  cur = i;
+  $("big").classList.remove("flipped");
+  fillBig(i);
+  $("modal").classList.add("open");
+  flipUp(i);
+}
+
+function go(step){
+  const n = cur + step;
+  if (busy || n < 0 || n >= N) return;
+  busy = true;
+  $("big").classList.remove("flipped");          // flip back over
+  setTimeout(() => {
+    cur = n; fillBig(n); flipUp(n);              // then flip the next one
+    setTimeout(() => busy = false, 700);
+  }, 550);
+}
+
+function close(){
+  $("modal").classList.remove("open"); cur = null;
+  $("big").querySelectorAll("video").forEach(v => v.pause());
+}
+
+$("next").addEventListener("click", () => go(1));
+$("prev").addEventListener("click", () => go(-1));
+$("close").addEventListener("click", close);
+$("modal").addEventListener("click", e => { if (e.target.id === "modal") close(); });
+document.addEventListener("keydown", e => {
+  if (cur === null) return;
+  if (e.target.closest && e.target.closest("input,textarea")) return;
+  if (e.key === "ArrowRight") go(1);
+  if (e.key === "ArrowLeft") go(-1);
+  if (e.key === "Escape") close();
+});
+let sx = null;
+$("modal").addEventListener("touchstart", e => { sx = e.target.closest(".comments") ? null : e.touches[0].clientX; }, {passive:true});
+$("modal").addEventListener("touchend", e => {
+  if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
+  if (dx < -50) go(1); else if (dx > 50) go(-1);
+});
+
+/* ---------- comments ---------- */
+let backend = null;              // set when Firebase is connected
+const shared = {};               // card number -> [{name,text,t}]
+
+function renderComments(){
+  if (cur === null) return;
+  const r = R[cur], num = cur + 1;
+  const items = [];
+  (shared[num] || []).forEach(c => items.push(c));
+  const box = $("comments");
+  box.hidden = !backend && items.length === 0;
+  const list = $("clist");
+  list.innerHTML = "";
+  if (!items.length) {
+    const e = document.createElement("div"); e.className = "empty"; e.textContent = "No comments yet. Be the first.";
+    list.appendChild(e);
+  }
+  items.forEach(c => {
+    const d = document.createElement("div"); d.className = "cmt";
+    const who = document.createElement("div"); who.className = "who";
+    const b = document.createElement("b"); b.textContent = c.name || "Someone"; who.appendChild(b);
+    if (c.t) who.appendChild(document.createTextNode(" · " + new Date(c.t).toLocaleDateString(undefined, { month:"short", day:"numeric", year:"numeric" })));
+    const t = document.createElement("div"); t.className = "txt"; t.textContent = c.text;
+    d.append(who, t); list.appendChild(d);
+  });
+}
+
+try { $("cname").value = localStorage.getItem("fifty-two-name") || ""; } catch(e) {}
+
+$("cform").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name = $("cname").value.trim(), text = $("ctext").value.trim();
+  if (!backend || cur === null) return;
+  if (!name) { $("cname").focus(); return; }
+  if (!text) { $("ctext").focus(); return; }
+  try { localStorage.setItem("fifty-two-name", name); } catch(e) {}
+  $("cpost").disabled = true; $("cpost").textContent = "Posting…";
+  try {
+    await backend.add({ card: cur + 1, name, text });
+    $("ctext").value = "";
+  } catch (err) {
+    console.warn(err);
+    $("cpost").textContent = "Couldn't post, try again";
+    setTimeout(() => { $("cpost").textContent = "Post"; }, 2500);
+  }
+  $("cpost").disabled = false;
+  if ($("cpost").textContent === "Posting…") $("cpost").textContent = "Post";
+});
+
+(async function connect(){
+  const cfg = CONFIG.firebase;
+  if (!cfg || !cfg.apiKey) return;
+  try {
+    const V = "10.12.2";
+    const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+    const fs = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+    const db = fs.getFirestore(initializeApp(cfg));
+    const col = fs.collection(db, "comments");
+    fs.onSnapshot(col, snap => {
+      Object.keys(shared).forEach(k => delete shared[k]);
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (typeof d.card !== "number") return;
+        const t = d.t && d.t.toMillis ? d.t.toMillis() : Date.now();
+        (shared[d.card] = shared[d.card] || []).push({ name: d.name, text: d.text, t });
+      });
+      Object.values(shared).forEach(a => a.sort((x, y) => x.t - y.t));
+      renderComments();
+    }, err => console.warn("comments:", err));
+    backend = { add: c => fs.addDoc(col, { ...c, t: fs.serverTimestamp() }) };
+    $("cform").hidden = false;
+    renderComments();
+  } catch (err) { console.warn("Comments are off:", err); }
+})();
+
+/* ---------- letter ---------- */
+$("letterTitle").textContent = CONFIG.letter.title;
+$("letterBody").textContent = CONFIG.letter.body;
+$("letterSign").textContent = CONFIG.letter.sign;
+$("letterSign").style.whiteSpace = "pre-line";
+const openLetter = () => { $("letter").classList.add("open"); $("letter").querySelector(".paper").scrollTop = 0; };
+const closeLetter = () => $("letter").classList.remove("open");
+$("letterBtn").addEventListener("click", openLetter);
+$("letterClose").addEventListener("click", closeLetter);
+$("letter").addEventListener("click", e => { if (e.target.id === "letter") closeLetter(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLetter(); });
+
+refresh();
+</script>
+</body>
+</html>
